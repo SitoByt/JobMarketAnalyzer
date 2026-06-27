@@ -24,12 +24,29 @@ public class SearchEngine {
 		for(Provider provider : providers) {
 			System.out.println("Searching on: " + provider.getName() + "\n");
 			for(Criteria criteria : criteriaList) {
-				String url = provider.buildUrl(criteria, 100);
-				String rawJson = networkManager.fetchRawJson(url);
-				if (rawJson != null) {
+				System.out.print("Scanning location: '" + criteria.getCity() + "' -> Pages: ");
+				int page = 1;
+				int jobsPerCriteria = 0;
+				while (true) {
+					String url = provider.buildUrl(criteria, page, 100);
+					String rawJson = networkManager.fetchRawJson(url);
+					if (rawJson == null) {break;}						
 					List<Job> jobs = provider.parseResponse(rawJson);
+					if(jobs.isEmpty()) {break;}
 					foundJobs.addAll(jobs);
+					jobsPerCriteria += jobs.size();
+					System.out.print(page + " ");
+					page++;
+					
+					if(page > 20) {
+						System.out.println("[Stopped at Page 10 - specify your criterias to get better results!");
+						break;
+					}
+					
+					// spam prevention!
+					try { Thread.sleep(100);} catch(Exception e) {}
 				}
+				System.out.println("(Found " + jobsPerCriteria + " Jobs)");
 			}
 		}
 		return foundJobs;

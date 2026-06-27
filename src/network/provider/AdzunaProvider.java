@@ -31,11 +31,11 @@ public class AdzunaProvider implements Provider {
 	}
 
 	@Override
-	public String buildUrl(Criteria criteria, int maxResults) {
+	public String buildUrl(Criteria criteria, int page, int maxResults) {
 		StringBuilder url = new StringBuilder(config.getUrlTemplate());
 		List<String> terms = new ArrayList<>();
 		
-		url.append(1).append("?app_id=").append(config.getAppId())
+		url.append(page).append("?app_id=").append(config.getAppId())
 			.append("&app_key=").append(config.getAppKey())
 			.append("&results_per_page=").append(maxResults);
 		

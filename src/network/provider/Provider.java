@@ -7,6 +7,6 @@ import data.job.Job;
 
 public interface Provider {
 	String getName();
-	String buildUrl(Criteria criteria, int maxResults);
+	String buildUrl(Criteria criteria, int page, int maxResults);
 	List<Job> parseResponse(String jsonResponse);
 }

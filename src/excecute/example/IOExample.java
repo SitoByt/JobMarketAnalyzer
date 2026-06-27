@@ -45,7 +45,7 @@ public class IOExample {
             NetworkManager analyzer = new NetworkManager();
             for (Provider provider : activeProviders) {
                 System.out.println("Start Job-Search for Provider: " + provider.getName() + "...");
-                String url = provider.buildUrl(myCriteria, 100);
+                String url = provider.buildUrl(myCriteria, 1, 100);
                 System.out.println("Seraching: " + url);
                 String rawJson = analyzer.fetchRawJson(url);
                 List<Job> foundJobs = provider.parseResponse(rawJson); 
