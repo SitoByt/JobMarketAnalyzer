@@ -1,4 +1,4 @@
-package data;
+package data.job;
 
 public enum ContractType {
 	PERMANENT, CONTRACT;

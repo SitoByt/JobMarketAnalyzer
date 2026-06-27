@@ -1,4 +1,4 @@
-package data;
+package data.job;
 
 public enum ContractTime {
 	PART_TIME, FULL_TIME, STUDENT;

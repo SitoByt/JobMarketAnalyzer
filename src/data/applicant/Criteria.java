@@ -2,8 +2,8 @@ package data.applicant;
 
 import java.util.List;
 
-import data.ContractTime;
-import data.ContractType;
+import data.job.ContractTime;
+import data.job.ContractType;
 
 public class Criteria {
 	
@@ -17,6 +17,26 @@ public class Criteria {
 	private String country; // not integrated yet
 	private String city;
 	private int radiusInKm;
+
+	private int id;
+	
+	public Criteria() {
+		
+	}
+	
+	@Override
+	public String toString() {
+		String criteria = "";
+		criteria += (industrySector != null) ? "Sector: " + industrySector + "\n" : "";
+		criteria += (city != null) ? "In: " + city + "(" + country + ")," + " r=" + radiusInKm + "\n": "";
+		criteria += (contractType != null || contractTime != null) ? 
+				"Contract: " + ContractType.toString(contractType) + 
+				" \t" + ContractTime.toString(contractTime) + "\n" 
+				: "";
+		criteria += (keywords.isEmpty() ? "" : keywords + "\n");
+		return criteria;
+		
+	}
 	
 	public String getCountry() {
 		return country;
@@ -28,10 +48,6 @@ public class Criteria {
 
 	public int getRadiusInKm() {
 		return radiusInKm;
-	}
-
-	public Criteria() {
-		
 	}
 
 	public int getDesiredSalary() {
@@ -85,7 +101,16 @@ public class Criteria {
 	public ContractType getEmploymentType() {
 		return contractType;
 	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
+	public int getId() {
+		return id;
+	}
+	
+
 	
 
 }

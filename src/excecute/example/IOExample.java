@@ -1,4 +1,4 @@
-package example;
+package excecute.example;
 
 import java.io.FileReader;
 import java.lang.reflect.Type;
@@ -10,10 +10,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import data.ContractTime;
-import data.ContractType;
-import data.Job;
 import data.applicant.Criteria;
+import data.job.ContractTime;
+import data.job.ContractType;
+import data.job.Job;
 import io.IOManager;
 import network.ApiProvider;
 import network.NetworkManager;
@@ -22,11 +22,11 @@ import network.provider.Provider;
 
 public class IOExample {
 	
-	public static void main(String[] args) {
+	public static void main() {
 		Criteria myCriteria = setUpExampleCriteria();
 		
 		try {
-			JsonObject root = JsonParser.parseReader(new FileReader("api_providers.json")).getAsJsonObject();
+			JsonObject root = JsonParser.parseReader(new FileReader("dataa/api_providers.json")).getAsJsonObject();
             JsonArray providersArray = root.getAsJsonArray("providers");
             
             // 1. SCHRITT: Rohe JSON-Daten in die ApiProvider-Datencontainer einlesen
@@ -45,7 +45,7 @@ public class IOExample {
             NetworkManager analyzer = new NetworkManager();
             for (Provider provider : activeProviders) {
                 System.out.println("Start Job-Search for Provider: " + provider.getName() + "...");
-                String url = provider.buildUrl(myCriteria, 100);
+                String url = provider.buildUrl(myCriteria, 1, 100);
                 System.out.println("Seraching: " + url);
                 String rawJson = analyzer.fetchRawJson(url);
                 List<Job> foundJobs = provider.parseResponse(rawJson); 
@@ -57,7 +57,8 @@ public class IOExample {
                 );
                 
                 // 5. In eine Markdown-Datei schreiben
-                IOManager.exportToMarkdown(sortedJobs, provider.getName());
+                IOManager.setFilePrefix(provider.getName());
+                IOManager.exportToMarkdown(sortedJobs);
             }
 		} catch (Exception e) {
             System.err.println("Exception: " + e.getMessage());
@@ -75,6 +76,5 @@ public class IOExample {
 		criteria.setKeywords(List.of());
 		return criteria;
 	}
-	
 
 }

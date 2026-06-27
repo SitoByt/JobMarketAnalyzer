@@ -24,4 +24,8 @@ hs_err_pid*
 replay_pid*
 
 # API folder
-api_providers.json
+data/api_providers.json
+data/*.db
+
+output/*
+.settings/*

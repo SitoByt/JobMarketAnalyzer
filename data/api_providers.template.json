@@ -1,0 +1,11 @@
+{
+    "providers": [
+        {
+            "name": "Adzuna",
+			"_comment": "country should be short, like 'de' or 'us' ",
+            "urlTemplate": "https://api.adzuna.com/v1/api/jobs/de/search/{page}?app_id={id}&app_key={key}&where={city}&what={keywords}",
+            "appId": "AppId", 
+            "appKey": "AppKey"
+        }
+    ]
+}

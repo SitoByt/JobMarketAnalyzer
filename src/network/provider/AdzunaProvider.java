@@ -11,10 +11,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import data.ContractTime;
-import data.ContractType;
-import data.Job;
 import data.applicant.Criteria;
+import data.job.ContractTime;
+import data.job.ContractType;
+import data.job.Job;
 import network.ApiProvider;
 
 public class AdzunaProvider implements Provider {
@@ -31,11 +31,11 @@ public class AdzunaProvider implements Provider {
 	}
 
 	@Override
-	public String buildUrl(Criteria criteria, int maxResults) {
+	public String buildUrl(Criteria criteria, int page, int maxResults) {
 		StringBuilder url = new StringBuilder(config.getUrlTemplate());
 		List<String> terms = new ArrayList<>();
 		
-		url.append(1).append("?app_id=").append(config.getAppId())
+		url.append(page).append("?app_id=").append(config.getAppId())
 			.append("&app_key=").append(config.getAppKey())
 			.append("&results_per_page=").append(maxResults);
 		
@@ -141,12 +141,11 @@ public class AdzunaProvider implements Provider {
 				
 				String url = jobJson.has("redirect_url")? jobJson.get("redirect_url").getAsString() : null;
 				
-				Job job = new Job(id, url, title, company, description);
+				Job job = new Job(url, title, company, description);
 				job.setContract(contractTime, contractType);
 				job.setSalary(minSalary, maxSalary, predictedSalary);
 				job.setLocation(location);
 				job.setCreated(created);
-				
 				jobs.add(job);
 			}
 		} catch (Exception e) {
