@@ -2,6 +2,10 @@ package excecute;
 
 import java.io.FileReader;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +14,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -68,6 +73,9 @@ public class JobMarketCommandLine {
             	changeCriteria();
             	break;
             case 4:
+            	changeProviders();
+            	break;
+            case 5:
             	return;
             default:
             	System.out.println("Please enter a valid Number");
@@ -75,6 +83,102 @@ public class JobMarketCommandLine {
 		}
 	}
 	
+	private void changeProviders() {
+		while(true){
+			System.out.println("\nEnter a Number to select an action:");
+			System.out.println("[1] Show Providers Only");
+            System.out.println("[2] Add a Provider");
+            System.out.println("[3] Delete Providers");
+            System.out.println("[4] Return");
+            System.out.println("Enter your Choice: ");
+            String input = scanner.nextLine();
+            int choice = -1;
+            try {
+            	choice = Integer.parseInt(input);
+            } catch(NumberFormatException e) {
+            	
+            }
+            clearScreen();
+            switch(choice) {
+            case 1:
+        		printProviders();
+        		break;
+            case 2:
+            	printProviders();
+            	addProvider();
+            	break;
+            case 3:
+            	printProviders();
+            	deleteProviders();
+            	break;
+            case 4:
+            	return; // returns to main menu
+            default:
+            	System.out.println("Please enter a valid Number");
+            }
+		}
+	}
+
+	private void deleteProviders() {
+		printProviders();
+		System.out.println("Enter the providers ids to continue:"
+				+ "\n[e.g: '1, 4, 5' ]");
+		String deleteInput = scanner.nextLine();
+		if (!deleteInput.isEmpty()) {
+			String[] arr = deleteInput.split(",");
+			List<Integer> ids = Arrays.stream(arr)
+					.map(x -> Integer.parseInt(x.strip()))
+					.collect(Collectors.toList());
+			if(ids.isEmpty()) { return; }
+			
+			for(int id : ids) {
+			    int idx = id - 1;
+			    if (idx >= 0 && idx < this.criteria.size()) {
+			        int pId = this.criteria.get(idx).getId();
+			        String name = this.providers.get(idx).getName();
+					try {
+						String pathString = "data/api_providers.json";
+						Path path = Paths.get(pathString);
+						if (Files.exists(path)) {
+							System.out.println("couldn't find: " + path.toString());
+							return;
+						}
+						
+						JsonObject root = JsonParser.parseReader(new FileReader(pathString)).getAsJsonObject();
+						JsonArray providersArray = root.getAsJsonArray("providers");
+						JsonArray updatedArray = new JsonArray();
+						
+						for (JsonElement je : providersArray) {
+							if(je.getAsJsonObject().get("name").getAsString().equalsIgnoreCase(name)) {
+								updatedArray.add(je);
+							}
+						}
+						root.add("providers", updatedArray);
+						Files.writeString(path, new Gson().toJson(root), StandardCharsets.UTF_8);
+						
+						this.providers = loadAllProviders();
+						System.out.println(name + " has been removed");
+					} catch (Exception e) {
+						System.err.println("Error removing provider: " + name);
+					}
+			    }
+			}
+		}
+	}
+
+	private void addProvider() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void printProviders() {
+		this.providers = loadAllProviders();
+		System.out.println("Active Providers:");
+		for (int i = 0; i < providers.size(); i++) {
+			System.out.println("[" + (i + 1) + "] " + providers.get(i).getName());
+		}
+	}
+
 	private void fullScan() {
 		criteria = db.loadAllCriteria();
 		if(criteria.isEmpty()) {
