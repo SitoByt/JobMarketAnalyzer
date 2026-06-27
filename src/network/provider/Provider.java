@@ -2,8 +2,8 @@ package network.provider;
 
 import java.util.List;
 
-import data.Job;
 import data.applicant.Criteria;
+import data.job.Job;
 
 public interface Provider {
 	String getName();

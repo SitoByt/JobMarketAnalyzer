@@ -11,10 +11,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import data.ContractTime;
-import data.ContractType;
-import data.Job;
 import data.applicant.Criteria;
+import data.job.ContractTime;
+import data.job.ContractType;
+import data.job.Job;
 import network.ApiProvider;
 
 public class AdzunaProvider implements Provider {
@@ -141,12 +141,11 @@ public class AdzunaProvider implements Provider {
 				
 				String url = jobJson.has("redirect_url")? jobJson.get("redirect_url").getAsString() : null;
 				
-				Job job = new Job(id, url, title, company, description);
+				Job job = new Job(url, title, company, description);
 				job.setContract(contractTime, contractType);
 				job.setSalary(minSalary, maxSalary, predictedSalary);
 				job.setLocation(location);
 				job.setCreated(created);
-				
 				jobs.add(job);
 			}
 		} catch (Exception e) {
